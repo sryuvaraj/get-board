@@ -1,66 +1,81 @@
-import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+"use client";
 
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { registerRecruiter as regRecruiter } from "@/api/seekersApis/services";
 
-interface registerFormDataProps {
-  name:string
+interface RegisterFormData {
+  name: string;
 }
 
 const RecruiterRegister = () => {
+  const router = useRouter();
 
-  const router = useRouter()
+  const [formData, setFormData] = useState<RegisterFormData>({ name: "" });
+  const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const recruiterLogin = () => {
-    router.push("/recruiter/recruiterLogin")
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setError(""); // clear error on change
+  };
 
-  const [formData, setFormData] = useState<registerFormDataProps>({name:""})
+  const handleRegister = async () => {
+    const trimmedName = formData.name.trim();
 
-  const handleChange = (e:any) => {
-   const {name, value} = e.target
-   setFormData((pre) => ({...pre, [name]:value}))
-  }
-
-  console.log(formData)
-
-  
-  const registerRecruiter = async () => {
-    if (!formData?.name.trim()) return; // Prevent empty names
+    if (!trimmedName) {
+      setError("Name is required");
+      return;
+    }
 
     try {
-      const response = await fetch("https://get-board-json-api.onrender.com/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData?.name.trim(),
-          id: "custom-id",
-        }),
-      });
+      setIsLoading(true);
+      const response = await regRecruiter({ name: trimmedName });
+      console.log("Recruiter registered:", response);
 
-      if (!response.ok) {
-        throw new Error("Failed to add user");
-      }
-
-      const data = await response.json();
-      console.log("User added:", data);
-
-      setFormData({name:""}); // Clear input after success
-    } catch (error) {
-      console.error("Error:", error);
+      setFormData({ name: "" });
+      alert("Registered successfully!");
+    } catch (err) {
+      console.error("Registration failed:", err);
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  return (
-    <div>RecruiterRegister
-      <div>
-        <input type='text' value={formData?.name} name='name' onChange={handleChange} />
-        <p onClick={registerRecruiter}>Register</p>
-      </div>
-      <p  onClick={recruiterLogin}>Recruiter Login</p>
-    </div>
-  )
-}
+  const navigateToLogin = () => {
+    router.push("/recruiter/recruiterLogin");
+  };
 
-export default RecruiterRegister
+  return (
+    <div className="p-4 max-w-md mx-auto space-y-4 border rounded shadow">
+      <h2 className="text-xl font-semibold">Recruiter Registration</h2>
+
+      <input
+        type="text"
+        name="name"
+        value={formData.name}
+        placeholder="Enter recruiter name"
+        onChange={handleChange}
+        className="border px-3 py-2 w-full rounded"
+      />
+
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+
+      <button
+        onClick={handleRegister}
+        disabled={isLoading}
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
+        {isLoading ? "Registering..." : "Register"}
+      </button>
+
+      <p onClick={navigateToLogin} className="text-blue-500 cursor-pointer">
+        Go to Recruiter Login
+      </p>
+    </div>
+  );
+};
+
+export default RecruiterRegister;

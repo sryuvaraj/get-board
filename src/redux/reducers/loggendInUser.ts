@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-interface LoogerInUserType {
+interface LoggedInUserType {
     id:string,
     emailId:string,
     token:string
