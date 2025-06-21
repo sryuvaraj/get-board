@@ -1,10 +1,42 @@
 import axios from "axios"
 
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+
+export const fetchRecruiters = async () => {
+        try {
+          const res = await axios.get(`${baseUrl}/recruiters`);
+          return res.data
+        } catch (err) {
+          console.error("Failed to fetch recruiters", err);
+          return err
+        }
+      };
+
+     export const fetchSeekers = async () => {
+        try {
+          const res = await axios.get(`${baseUrl}/seekers`);
+          return res.data
+        } catch (err) {
+          console.error("Failed to fetch recruiters", err);
+          return err
+        }
+      };
+
+      export const fetchUsers = async () => {
+        try {
+          const res = await axios.get(`${baseUrl}/users`);
+          return res.data
+        } catch (err) {
+          console.error("Failed to fetch recruiters", err);
+          return err
+        }
+      };
 
 export const registerSeeker = async (body:any) => {
     try{
-        const resUser = await axios.post(`https://get-board-json-api.onrender.com/users`, body)
-        const resSeeker = await axios.post(`https://get-board-json-api.onrender.com/seekers`, body)
+        const resUser = await axios.post(`${baseUrl}/users`, body)
+        const resSeeker = await axios.post(`${baseUrl}/seekers`, body)
     return resUser.data
     }
     catch(err) {
@@ -15,8 +47,9 @@ export const registerSeeker = async (body:any) => {
 
 export const registerRecruiter = async (body:any) => {
     try{
-        const resUser = await axios.post(`https://get-board-json-api.onrender.com/users`, body)
-        const resSeeker = await axios.post(`https://get-board-json-api.onrender.com/recruiters`, body)
+        const resUser = await axios.post(`${baseUrl}/users`, body)
+        const resReciteres = await axios.post(`${baseUrl}/recruiters`, body)
+        // const resSeeker = await axios.post(`${baseUrl}/recruiters`, body)
     return resUser.data
     }
     catch(err) {
