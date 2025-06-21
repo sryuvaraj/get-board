@@ -1,8 +1,8 @@
 {
     "users": [
-      { "id": 1, "name": "Hello", "isSeeker":false }
     ],
-    "recruiter":[
-
+    "recruiters":[
+    ],
+    "seekers":[
     ]
   }
