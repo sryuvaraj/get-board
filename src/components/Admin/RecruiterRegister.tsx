@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { registerRecruiter as regRecruiter } from "@/api/seekersApis/services";
+import GoogleLoginButton from "../General/GoogleLoginButton";
+
 
 interface RegisterFormData {
   name: string;
@@ -150,6 +152,7 @@ const RecruiterRegister = () => {
       <p onClick={navigateToLogin} className="text-blue-500 text-center cursor-pointer">
         Already registered? Go to Login
       </p>
+      <div><GoogleLoginButton /></div>
     </div>
   );
 };

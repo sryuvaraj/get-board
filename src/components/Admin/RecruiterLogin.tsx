@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setLoggenInUser } from "@/redux/reducers/loggendInUser";
+import GoogleLoginButton from "../General/GoogleLoginButton";
 
 const RecruiterLogin = () => {
   const router = useRouter();
@@ -85,6 +86,7 @@ const RecruiterLogin = () => {
       >
         Login
       </button>
+      <div><GoogleLoginButton /></div>
 
       <p
         onClick={navigateToRegister}

@@ -1,20 +1,16 @@
 "use client";
 
-import Providers from "@/components/Providers";
-import { setIsSeeker } from "@/redux/reducers/isSeeker";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {fetchSeekers as fSeekers} from "@/api/seekersApis/services"
-import {fetchRecruiters as fRecruiters} from "@/api/seekersApis/services"
+import { useDispatch } from "react-redux";
+import { setIsSeeker } from "@/redux/reducers/isSeeker";
+import { fetchSeekers, fetchRecruiters } from "@/api/seekersApis/services";
 
 export default function Home() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const [name, setName] = useState("");
-
-  const recruterLogin = () => {
+  const recruiterLogin = () => {
     dispatch(setIsSeeker(false));
     router.push("/recruiter/recruiterLogin");
   };
@@ -24,25 +20,23 @@ export default function Home() {
     router.push("/seeker/seekerLogin");
   };
 
-  const fetchSeekers = async () => {
-    const res = await fSeekers()
+  const loadUsers = async () => {
+    try {
+      await fetchSeekers();
+      await fetchRecruiters();
+      // await fetchUsers(); // Add actual implementation if needed
+    } catch (err) {
+      console.error("Failed to load users:", err);
+    }
   };
-
-  const fetchRecruiters = async () => {
-    const res = await fRecruiters()
-  };
-
-  const fetchUsers = () => {};
 
   useEffect(() => {
-    fetchRecruiters();
-    fetchSeekers();
-    fetchUsers();
+    loadUsers();
   }, []);
 
   return (
     <div>
-      <p onClick={recruterLogin}>Recriter Login</p>
+      <p onClick={recruiterLogin}>Recruiter Login</p>
       <p onClick={seekerLogin}>Job Seeker Login</p>
     </div>
   );

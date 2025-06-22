@@ -2,6 +2,7 @@ import { setIsSeeker } from '@/redux/reducers/isSeeker'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import GoogleLoginButton from '../General/GoogleLoginButton'
 
 
 interface loginFormType {
@@ -52,6 +53,7 @@ const SeekerLogin = () => {
       <input type='password' onChange={handleChange} name="password" value={formData?.password} placeholder='password' />
       <p onClick={loginSeeker}>Login</p>
         <p onClick={seekerRegister}>Seeker Register</p>
+        <div><GoogleLoginButton /></div>
     </div>
   )
 }
