@@ -6,6 +6,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setLoggenInUser } from "@/redux/reducers/loggendInUser";
 import GoogleLoginButton from "../General/GoogleLoginButton";
+import { fetchRecruiters } from "@/api/seekersApis/services";
 
 const RecruiterLogin = () => {
   const router = useRouter();
@@ -16,8 +17,6 @@ const RecruiterLogin = () => {
   const [error, setError] = useState("");
 
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-
-
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -34,8 +33,7 @@ const RecruiterLogin = () => {
     }
 
     const matchedRecruiter = recruiters.find(
-      (rec: any) =>
-        rec.username === username && rec.password === password
+      (rec: any) => rec.username === username && rec.password === password
     );
 
     if (matchedRecruiter) {
@@ -50,6 +48,18 @@ const RecruiterLogin = () => {
     router.push("/recruiter/recruiterRegister");
   };
 
+  const loadUsers = async () => {
+    try {
+      const resRecruiters = await fetchRecruiters();
+      setRecruiters(resRecruiters);
+      // await fetchUsers(); // Add actual implementation if needed
+    } catch (err) {
+      console.error("Failed to load users:", err);
+    }
+  };
+  useEffect(() => {
+    loadUsers();
+  }, []);
   return (
     <div className="p-4 max-w-md mx-auto space-y-4 border rounded shadow">
       <h2 className="text-xl font-semibold">Recruiter Login</h2>
@@ -86,7 +96,9 @@ const RecruiterLogin = () => {
       >
         Login
       </button>
-      <div><GoogleLoginButton /></div>
+      <div onClick={handleLogin}>
+        <GoogleLoginButton recruiters={recruiters} />
+      </div>
 
       <p
         onClick={navigateToRegister}

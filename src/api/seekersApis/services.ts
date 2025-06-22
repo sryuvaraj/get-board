@@ -49,6 +49,7 @@ export const registerRecruiter = async (body:any) => {
     try{
         const resUser = await axios.post(`${baseUrl}/users`, body)
         const resReciteres = await axios.post(`${baseUrl}/recruiters`, body)
+        debugger
         // const resSeeker = await axios.post(`${baseUrl}/recruiters`, body)
     return resUser.data
     }

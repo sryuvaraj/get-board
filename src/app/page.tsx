@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setIsSeeker } from "@/redux/reducers/isSeeker";
@@ -9,6 +9,9 @@ import { fetchSeekers, fetchRecruiters } from "@/api/seekersApis/services";
 export default function Home() {
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const [recruitersList, setRecruitersList] = useState<any>([])
+  const [seekersList, setIsSeekersList] = useState<any>([])
 
   const recruiterLogin = () => {
     dispatch(setIsSeeker(false));
@@ -22,8 +25,10 @@ export default function Home() {
 
   const loadUsers = async () => {
     try {
-      await fetchSeekers();
-      await fetchRecruiters();
+      const resRecruiters = await fetchSeekers();
+      setRecruitersList(resRecruiters)
+      const resSeekers = await fetchRecruiters();
+      setIsSeekersList(resSeekers)
       // await fetchUsers(); // Add actual implementation if needed
     } catch (err) {
       console.error("Failed to load users:", err);
