@@ -1,10 +1,10 @@
 "use client"
 
-import store from '@/redux/store'
+import {store} from '@/redux/store'
 import React from 'react'
 import { Provider } from 'react-redux'
 
-const Providers = ({children}:any) => {
+const Providers = ({children}:React.PropsWithChildren) => {
   return (
     <Provider store={store}>
     <div>

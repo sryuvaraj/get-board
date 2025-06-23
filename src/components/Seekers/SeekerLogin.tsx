@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setIsSeeker } from "@/redux/reducers/isSeeker";
 import GoogleLoginButton from "../General/GoogleLoginButton";
 import { fetchSeekers } from "@/api/seekersApis/services"; // 👈 adjust path if needed
+import { User } from "@/types/type";
 
 interface LoginFormType {
   email: string;
@@ -44,7 +45,7 @@ const SeekerLogin = () => {
       const seekers = await fetchSeekers();
 
       const matchedSeeker = seekers?.find(
-        (seeker: any) => seeker.email === email && seeker.password === password
+        (seeker: User) => seeker.email === email && seeker.password === password
       );
 
       if (matchedSeeker) {

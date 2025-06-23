@@ -25,6 +25,7 @@ const SeekerHome = () => {
         setJobs(jobList);
       } catch (err) {
         setError("Failed to load jobs.");
+        console.log(err)
       } finally {
         setIsLoading(false);
       }

@@ -1,15 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setLoggedInUser } from "@/redux/reducers/loggendInUser";
 import { registerRecruiter as regRecruiter } from "@/api/seekersApis/services";
+import { User } from "@/types/type";
 
 interface GoogleLoginButtonProps {
   recruiters?: Array<{ email: string }>;
+}
+
+interface DecodedGoogleUser {
+  email: string;
+  given_name?: string;
+  family_name?: string;
+  picture?: string;
 }
 
 const GoogleLoginButton = ({ recruiters = [] }: GoogleLoginButtonProps) => {
@@ -19,20 +27,26 @@ const GoogleLoginButton = ({ recruiters = [] }: GoogleLoginButtonProps) => {
   const [showModal, setShowModal] = useState(false);
   const [companyName, setCompanyName] = useState("");
   const [phone, setPhone] = useState("");
-  const [newUser, setNewUser] = useState<any>(null);
+  const [newUser, setNewUser] = useState<User | null>(null);
   const [formError, setFormError] = useState("");
 
-  const handleSuccess = async (credentialResponse: any) => {
-    const token = credentialResponse.credential;
-    const user: any = jwtDecode(token);
+  const handleSuccess = async (credentialResponse: CredentialResponse) => {
+    if (!credentialResponse.credential) {
+      console.error("Missing Google Credential");
+      return;
+    }
 
-    const isExist = recruiters.find((rec) => rec?.email === user?.email);
+    const decoded: DecodedGoogleUser = jwtDecode(credentialResponse.credential);
 
-    const userPayload = {
-      name: `${user?.given_name || ""} ${user?.family_name || ""}`.trim(),
-      email: user?.email,
-      role: "recruiter",
-      token: token,
+    const isExist = recruiters.find((rec) => rec.email === decoded.email);
+
+    const userPayload: User = {
+      name: `${decoded.given_name || ""} ${decoded.family_name || ""}`.trim(),
+      email: decoded.email,
+      companyName: "", // Will be collected if new user
+      phone: "",       // Will be collected if new user
+      password: "google-auth", // or any dummy password
+      isSeeker: false,
     };
 
     if (isExist) {
@@ -50,16 +64,22 @@ const GoogleLoginButton = ({ recruiters = [] }: GoogleLoginButtonProps) => {
       return;
     }
 
+    if (!newUser) return;
+
     try {
       await regRecruiter({
         name: newUser.name,
         email: newUser.email,
         companyName,
         phone,
-        password: "google-auth", // or generate random
+        password: "google-auth",
       });
 
-      dispatch(setLoggedInUser(newUser));
+      dispatch(setLoggedInUser({
+        ...newUser,
+        companyName,
+        phone,
+      }));
       router.push("/recruiter/home");
     } catch (error) {
       console.error("Google user registration failed", error);

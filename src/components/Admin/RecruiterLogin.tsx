@@ -2,21 +2,21 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setLoggedInUser } from "@/redux/reducers/loggendInUser";
 import GoogleLoginButton from "../General/GoogleLoginButton";
 import { fetchRecruiters } from "@/api/seekersApis/services";
+import { User } from "@/types/type";
+import { RecruitersLogForm } from "@/types/formDataTypes";
 
 const RecruiterLogin = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const [recruiters, setRecruiters] = useState([]);
-  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [recruiters, setRecruiters] = useState<User[]>([]);
+  const [formData, setFormData] = useState<RecruitersLogForm>({ username: "", password: "" });
   const [error, setError] = useState("");
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,17 +32,12 @@ const RecruiterLogin = () => {
       return;
     }
 
-    const matchedRecruiter:any = recruiters.find(
-      (rec: any) => rec.username === username && rec.password === password
+    const matchedRecruiter:User|undefined = recruiters.find(
+      (rec: User) => rec.email === username && rec.password === password
     );
 
     if (matchedRecruiter) {
-      dispatch(setLoggedInUser({
-  name: matchedRecruiter?.name,
-  email: matchedRecruiter?.email,
-  role: "recruiter",
-  token: "abc123token",
-}));
+      dispatch(setLoggedInUser(matchedRecruiter));
       router.push("/recruiter/home");
     } else {
       setError("Invalid credentials. Please try again.");
@@ -55,7 +50,7 @@ const RecruiterLogin = () => {
 
   const loadUsers = async () => {
     try {
-      const resRecruiters = await fetchRecruiters();
+      const resRecruiters:User[] = await fetchRecruiters();
       setRecruiters(resRecruiters);
       // await fetchUsers(); // Add actual implementation if needed
     } catch (err) {

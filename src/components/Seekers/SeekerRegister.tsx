@@ -1,19 +1,14 @@
+"use client";
+
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { registerSeeker as regseek } from "@/api/seekersApis/services";
-
-interface SeekerRegisterFormType {
-  name: string;
-  userName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
+import { SeekersRegForm } from "@/types/formDataTypes";
 
 const SeekerRegister = () => {
   const router = useRouter();
 
-  const initialFormData: SeekerRegisterFormType = {
+  const initialFormData: SeekersRegForm = {
     name: "",
     userName: "",
     email: "",
@@ -21,30 +16,27 @@ const SeekerRegister = () => {
     confirmPassword: "",
   };
 
+  const [formData, setFormData] = useState<SeekersRegForm>(initialFormData);
+  const [errors, setErrors] = useState<Partial<SeekersRegForm>>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState<Partial<SeekerRegisterFormType>>({});
-  const [formData, setFormData] = useState(initialFormData);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" })); // clear error on change
   };
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<SeekerRegisterFormType> = {};
+    const newErrors: Partial<SeekersRegForm> = {};
 
-    if (!formData.name.trim()) newErrors.name = "Name can't be empty";
-    if (!formData.userName.trim()) newErrors.userName = "Username can't be empty";
-    if (!formData.email.trim()) newErrors.email = "Email can't be empty";
-    if (!formData.password.trim()) newErrors.password = "Password can't be empty";
-    if (!formData.confirmPassword.trim()) newErrors.confirmPassword = "Confirm password can't be empty";
+    if (!formData.name.trim()) newErrors.name = "Name is required";
+    if (!formData.userName.trim()) newErrors.userName = "Username is required";
+    if (!formData.email.trim()) newErrors.email = "Email is required";
+    if (!formData.password.trim()) newErrors.password = "Password is required";
+    if (!formData.confirmPassword.trim()) newErrors.confirmPassword = "Confirm password is required";
 
-    if (
-      formData.password &&
-      formData.confirmPassword &&
-      formData.password !== formData.confirmPassword
-    ) {
-      newErrors.confirmPassword = "Password and Confirm Password should match";
+    if (formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
     setErrors(newErrors);
@@ -58,8 +50,8 @@ const SeekerRegister = () => {
       setIsLoading(true);
       const response = await regseek(formData);
       console.log("Registered seeker:", response);
-      // redirect if needed
-      // router.push('/seeker/dashboard');
+      // ✅ Optional redirect after success
+      // router.push("/seeker/home");
     } catch (err) {
       console.error("Registration failed:", err);
     } finally {
@@ -72,73 +64,45 @@ const SeekerRegister = () => {
   };
 
   return (
-    <div>
-      <div>
-        <label>
-          <p>Name</p>
+    <div className="max-w-md mx-auto mt-10 p-6 border rounded-lg shadow">
+      <h2 className="text-2xl font-semibold mb-4 text-center">Seeker Registration</h2>
+
+      {["name", "userName", "email", "password", "confirmPassword"].map((field) => (
+        <div className="mb-4" key={field}>
+          <label className="block font-medium mb-1" htmlFor={field}>
+            {field === "userName"
+              ? "Username"
+              : field === "confirmPassword"
+              ? "Confirm Password"
+              : field.charAt(0).toUpperCase() + field.slice(1)}
+          </label>
           <input
-            type="text"
-            name="name"
-            value={formData.name}
+            id={field}
+            type={field.includes("password") ? "password" : field === "email" ? "email" : "text"}
+            name={field}
+            value={formData[field as keyof SeekersRegForm]}
             onChange={handleChange}
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+            autoComplete="off"
           />
-          <p className="text-red-500 text-sm h-5">{errors.name ?? ""}</p>
-        </label>
+          {errors?.[field as keyof SeekersRegForm] && (
+            <p className="text-sm text-red-500">{errors[field as keyof SeekersRegForm]}</p>
+          )}
+        </div>
+      ))}
 
-        <label>
-          <p>Username</p>
-          <input
-            type="text"
-            name="userName"
-            value={formData.userName}
-            onChange={handleChange}
-          />
-          <p className="text-red-500 text-sm h-5">{errors.userName ?? ""}</p>
-        </label>
+      <button
+        onClick={registerSeeker}
+        disabled={isLoading}
+        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+      >
+        {isLoading ? "Registering..." : "Register"}
+      </button>
 
-        <label>
-          <p>Email</p>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          <p className="text-red-500 text-sm h-5">{errors.email ?? ""}</p>
-        </label>
-
-        <label>
-          <p>Password</p>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          <p className="text-red-500 text-sm h-5">{errors.password ?? ""}</p>
-        </label>
-
-        <label>
-          <p>Confirm Password</p>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-          />
-          <p className="text-red-500 text-sm h-5">{errors.confirmPassword ?? ""}</p>
-        </label>
-
-        <button
-          onClick={registerSeeker}
-          disabled={isLoading}
-          className="bg-blue-500 text-white px-4 py-2 mt-4"
-        >
-          {isLoading ? "Registering..." : "Register Seeker"}
-        </button>
-      </div>
-
-      <p onClick={seekerLogin} className="text-blue-600 mt-4 cursor-pointer">
+      <p
+        onClick={seekerLogin}
+        className="text-blue-600 text-center mt-4 cursor-pointer hover:underline"
+      >
         Already registered? Login
       </p>
     </div>

@@ -5,13 +5,16 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setIsSeeker } from "@/redux/reducers/isSeeker";
 import { fetchSeekers, fetchRecruiters } from "@/api/seekersApis/services";
+import { User } from "@/types/type";
 
 export default function Home() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const [recruitersList, setRecruitersList] = useState<any>([])
-  const [seekersList, setIsSeekersList] = useState<any>([])
+  const [recruitersList, setRecruitersList] = useState<User[]>([])
+  const [seekersList, setIsSeekersList] = useState<User[]>([])
+  console.log(recruitersList)
+  console.log(seekersList)
 
   const recruiterLogin = () => {
     dispatch(setIsSeeker(false));

@@ -1,4 +1,5 @@
 import axios from "axios"
+import { JobData, RecruitersRegForm, SeekersRegForm } from "@/types/formDataTypes";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -33,11 +34,11 @@ export const fetchRecruiters = async () => {
         }
       };
 
-export const registerSeeker = async (body:any) => {
+export const registerSeeker = async (body:SeekersRegForm) => {
     try{
         const resUser = await axios.post(`${baseUrl}/users`, body)
-        const resSeeker = await axios.post(`${baseUrl}/seekers`, body)
-    return resUser.data
+        // const resSeeker = await axios.post(`${baseUrl}/seekers`, body)
+        return resUser.data
     }
     catch(err) {
         alert(err)
@@ -45,11 +46,11 @@ export const registerSeeker = async (body:any) => {
 }
 
 
-export const registerRecruiter = async (body:any) => {
+export const registerRecruiter = async (body:RecruitersRegForm) => {
     try{
         const resUser = await axios.post(`${baseUrl}/users`, body)
-        const resReciteres = await axios.post(`${baseUrl}/recruiters`, body)
-        debugger
+        // const resReciteres = await axios.post(`${baseUrl}/recruiters`, body)
+    
         // const resSeeker = await axios.post(`${baseUrl}/recruiters`, body)
     return resUser.data
     }
@@ -59,12 +60,12 @@ export const registerRecruiter = async (body:any) => {
 }
 
 
-export const addJOb = async (body:any) => {
+export const addJOb = async (body:JobData) => {
   try{
     const res = await axios.post(`${baseUrl}/jobList`, body)
     return res?.data
   }
-  catch(err:any) {
+  catch(err) {
     return err
   }
 }
@@ -75,7 +76,7 @@ export const fetchJobs = async () => {
     const res = await axios.get(`${baseUrl}/jobList`)
     return res?.data
   }
-  catch(err:any) {
+  catch(err) {
     return err
   }
 }

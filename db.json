@@ -1,58 +1,7 @@
 {
-  "users": [
-    {
-      "id": "9d02",
-      "name": "S R Yuvaraj",
-      "email": "sryuvaraj99@gmail.com",
-      "companyName": "ac",
-      "phone": "1234567890",
-      "password": "google-auth"
-    },
-    {
-      "id": "30d9",
-      "name": "S R Yuvaraj",
-      "userName": "sryuvaraj99@gmail.com",
-      "email": "sryuvaraj99@gmail.ocm",
-      "password": "1",
-      "confirmPassword": "1"
-    },
-    {
-      "id": "6f41",
-      "name": "S R Yuvaraj",
-      "userName": "sryuvaraj99@gmail.com",
-      "email": "sryuvaraj99@gmail.ocm",
-      "password": "1",
-      "confirmPassword": "1"
-    }
-  ],
-  "recruiters": [
-    {
-      "id": "02e8",
-      "name": "S R Yuvaraj",
-      "email": "sryuvaraj99@gmail.com",
-      "companyName": "ac",
-      "phone": "1234567890",
-      "password": "google-auth"
-    }
-  ],
-  "seekers": [
-    {
-      "id": "a8a7",
-      "name": "S R Yuvaraj",
-      "userName": "sryuvaraj99@gmail.com",
-      "email": "sryuvaraj99@gmail.ocm",
-      "password": "1",
-      "confirmPassword": "1"
-    },
-    {
-      "id": "a64f",
-      "name": "S R Yuvaraj",
-      "userName": "sryuvaraj99@gmail.com",
-      "email": "sryuvaraj99@gmail.ocm",
-      "password": "1",
-      "confirmPassword": "1"
-    }
-  ],
+  "users": [ ],
+  "recruiters": [ ],
+  "seekers": [ ],
   "jobList": [
     {
       "id": "f8c5",

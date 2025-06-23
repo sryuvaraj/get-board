@@ -1,28 +1,29 @@
 "use client";
 
 import { addJOb } from "@/api/seekersApis/services";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { User } from "@/types/type";
+import { JobData } from "@/types/formDataTypes";
+import { RootState } from "@/redux/store";
 
 const RecruiterHome = () => {
 
-  const user = useSelector((state:any) => state?.loggedInUser?.user)
-  
-  debugger
+  const user:User|null = useSelector((state:RootState) => state?.loggedInUser?.user)
 
   const [showOpeningForm, setShowOpeningForm] = useState(false);
   const [jobTitle, setJobTitle] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
   const [type, setType] = useState("Full-time");
-  const [experience, setExperience] = useState("");
+  const [experience, setExperience] = useState<string>("");
   const [salary, setSalary] = useState("");
   const [skills, setSkills] = useState("");
   const [deadline, setDeadline] = useState("");
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const jobData = {
+    const jobData:JobData = {
       jobTitle,
       description,
       location,
@@ -33,7 +34,7 @@ const RecruiterHome = () => {
       deadline,
     };
     const res = await addJOb(jobData)
-    console.log("Submitted Job:", jobData);
+    console.log("Submitted Job:", res);
 
     // 🔄 call your API to save jobData here
 
