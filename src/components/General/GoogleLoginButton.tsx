@@ -5,10 +5,14 @@ import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { setLoggenInUser } from "@/redux/reducers/loggendInUser";
+import { setLoggedInUser } from "@/redux/reducers/loggendInUser";
 import { registerRecruiter as regRecruiter } from "@/api/seekersApis/services";
 
-const GoogleLoginButton = ({ recruiters }: any) => {
+interface GoogleLoginButtonProps {
+  recruiters?: Array<{ email: string }>;
+}
+
+const GoogleLoginButton = ({ recruiters = [] }: GoogleLoginButtonProps) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -22,13 +26,20 @@ const GoogleLoginButton = ({ recruiters }: any) => {
     const token = credentialResponse.credential;
     const user: any = jwtDecode(token);
 
-    const isExist = recruiters?.find((rec: any) => rec?.email === user?.email);
+    const isExist = recruiters.find((rec) => rec?.email === user?.email);
+
+    const userPayload = {
+      name: `${user?.given_name || ""} ${user?.family_name || ""}`.trim(),
+      email: user?.email,
+      role: "recruiter",
+      token: token,
+    };
 
     if (isExist) {
-      dispatch(setLoggenInUser(user));
-      router.push("/recruiter/recruiterHome");
+      dispatch(setLoggedInUser(userPayload));
+      router.push("/recruiter/home");
     } else {
-      setNewUser(user);
+      setNewUser(userPayload);
       setShowModal(true);
     }
   };
@@ -41,14 +52,14 @@ const GoogleLoginButton = ({ recruiters }: any) => {
 
     try {
       await regRecruiter({
-        name: newUser?.name,
-        email: newUser?.email,
+        name: newUser.name,
+        email: newUser.email,
         companyName,
         phone,
-        password: "google-auth",
+        password: "google-auth", // or generate random
       });
 
-      dispatch(setLoggenInUser(newUser));
+      dispatch(setLoggedInUser(newUser));
       router.push("/recruiter/home");
     } catch (error) {
       console.error("Google user registration failed", error);

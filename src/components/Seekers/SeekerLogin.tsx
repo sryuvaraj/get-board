@@ -1,61 +1,117 @@
-import { setIsSeeker } from '@/redux/reducers/isSeeker'
-import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import GoogleLoginButton from '../General/GoogleLoginButton'
+"use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsSeeker } from "@/redux/reducers/isSeeker";
+import GoogleLoginButton from "../General/GoogleLoginButton";
+import { fetchSeekers } from "@/api/seekersApis/services"; // 👈 adjust path if needed
 
-interface loginFormType {
-  email:string,
-  password:string
+interface LoginFormType {
+  email: string;
+  password: string;
 }
 
 const SeekerLogin = () => {
-    const router = useRouter()
-    const dispatch = useDispatch()
+  const router = useRouter();
+  const dispatch = useDispatch();
 
-    const initialForm:loginFormType = {
-      email : "",
-      password :""
+  const [formData, setFormData] = useState<LoginFormType>({
+    email: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setError("");
+  };
+
+  const loginSeeker = async () => {
+    const { email, password } = formData;
+
+    if (!email || !password) {
+      setError("Both email and password are required.");
+      return;
     }
 
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [formData, setFormData] = useState<loginFormType>(initialForm)
+    setIsLoading(true);
 
-    const isSeeker = useSelector((state:any) => state?.isSeekerr?.value)
+    try {
+      const seekers = await fetchSeekers();
 
-    const seekerRegister = () => {
-        router.push("/seeker/seekerRegister")
-    }
+      const matchedSeeker = seekers?.find(
+        (seeker: any) => seeker.email === email && seeker.password === password
+      );
 
-    const handleChange = (e:any) => {
-      const {name, value} = e.target
-      setFormData({...formData, [name]:value})
-    }
-
-    const loginSeeker = () => {
-      try{
-        setIsLoading(true)
-        console.log(formData, "loginseekerFOrm")
+      if (matchedSeeker) {
+        dispatch(setIsSeeker(true));
+        router.push("/seeker/home");
+      } else {
+        setError("Invalid email or password.");
       }
-      catch(err:any){
-
-      }
-
-      finally{
-        setIsLoading(false)
-      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const handleRegisterRedirect = () => {
+    router.push("/seeker/seekerRegister");
+  };
 
   return (
-    <div>SeekerLogin
-      <input type='email' onChange={handleChange} name="email" value={formData?.email} placeholder='e,mail' />
-      <input type='password' onChange={handleChange} name="password" value={formData?.password} placeholder='password' />
-      <p onClick={loginSeeker}>Login</p>
-        <p onClick={seekerRegister}>Seeker Register</p>
-        <div><GoogleLoginButton /></div>
-    </div>
-  )
-}
+    <div className="flex justify-center items-center h-screen bg-gray-100 px-4">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-semibold text-center mb-6">Seeker Login</h2>
 
-export default SeekerLogin
+        <div className="space-y-4">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+
+        <button
+          onClick={loginSeeker}
+          disabled={isLoading}
+          className="mt-4 w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition"
+        >
+          {isLoading ? "Logging in..." : "Login"}
+        </button>
+
+        <p
+          onClick={handleRegisterRedirect}
+          className="text-center mt-4 text-blue-500 hover:underline cursor-pointer"
+        >
+          New user? Register here
+        </p>
+
+        <div className="mt-6">
+          <GoogleLoginButton />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SeekerLogin;

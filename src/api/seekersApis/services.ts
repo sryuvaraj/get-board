@@ -57,3 +57,25 @@ export const registerRecruiter = async (body:any) => {
         alert(err)
     }
 }
+
+
+export const addJOb = async (body:any) => {
+  try{
+    const res = await axios.post(`${baseUrl}/jobList`, body)
+    return res?.data
+  }
+  catch(err:any) {
+    return err
+  }
+}
+
+
+export const fetchJobs = async () => {
+  try{
+    const res = await axios.get(`${baseUrl}/jobList`)
+    return res?.data
+  }
+  catch(err:any) {
+    return err
+  }
+}

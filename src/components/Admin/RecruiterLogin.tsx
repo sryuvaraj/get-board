@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { setLoggenInUser } from "@/redux/reducers/loggendInUser";
+import { setLoggedInUser } from "@/redux/reducers/loggendInUser";
 import GoogleLoginButton from "../General/GoogleLoginButton";
 import { fetchRecruiters } from "@/api/seekersApis/services";
 
@@ -32,12 +32,17 @@ const RecruiterLogin = () => {
       return;
     }
 
-    const matchedRecruiter = recruiters.find(
+    const matchedRecruiter:any = recruiters.find(
       (rec: any) => rec.username === username && rec.password === password
     );
 
     if (matchedRecruiter) {
-      dispatch(setLoggenInUser(matchedRecruiter));
+      dispatch(setLoggedInUser({
+  name: matchedRecruiter?.name,
+  email: matchedRecruiter?.email,
+  role: "recruiter",
+  token: "abc123token",
+}));
       router.push("/recruiter/home");
     } else {
       setError("Invalid credentials. Please try again.");

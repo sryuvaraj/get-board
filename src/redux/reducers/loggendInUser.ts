@@ -1,29 +1,32 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface LoggedInUserType {
-    id:string,
-    emailId:string,
-    token:string
+  name: string;
+  email: string;
+  role?: string;        // optional: "recruiter" | "seeker"
+  token?: string;       // optional if you're storing auth token
 }
 
-
-const initialState = {
-    value:{
-        id:"",
-        email:"",
-        token:""
-    }
+interface LoggedInUserState {
+  user: LoggedInUserType | null;
 }
 
-export const loggedIn = createSlice({
-    name:"loggedInU",
-    initialState,
-    reducers:{
-        setLoggenInUser:(state:any, action:any) => {
-            state.value = action.payload
-        }
-    }
-})
+const initialState: LoggedInUserState = {
+  user: null,
+};
 
-export const {setLoggenInUser} = loggedIn.actions
-export default loggedIn.reducer
+const loggedInUserSlice = createSlice({
+  name: "loggedInUser",
+  initialState,
+  reducers: {
+    setLoggedInUser: (state, action: PayloadAction<LoggedInUserType>) => {
+      state.user = action.payload;
+    },
+    clearLoggedInUser: (state) => {
+      state.user = null;
+    },
+  },
+});
+
+export const { setLoggedInUser, clearLoggedInUser } = loggedInUserSlice.actions;
+export default loggedInUserSlice.reducer;

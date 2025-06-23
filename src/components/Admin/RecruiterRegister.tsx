@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { registerRecruiter as regRecruiter } from "@/api/seekersApis/services";
 import GoogleLoginButton from "../General/GoogleLoginButton";
 
-
 interface RegisterFormData {
   name: string;
   companyName: string;
@@ -51,13 +50,7 @@ const RecruiterRegister = () => {
 
     try {
       setIsLoading(true);
-      const response = await regRecruiter({
-        name,
-        companyName,
-        email,
-        phone,
-        password,
-      });
+      const response = await regRecruiter({ name, companyName, email, phone, password });
       console.log("Recruiter registered:", response);
 
       alert("Registered successfully!");
@@ -85,59 +78,22 @@ const RecruiterRegister = () => {
     <div className="p-6 max-w-md mx-auto border rounded shadow space-y-4">
       <h2 className="text-xl font-semibold text-center">Recruiter Registration</h2>
 
-      <input
-        name="name"
-        type="text"
-        placeholder="Full Name"
-        value={formData.name}
-        onChange={handleChange}
-        className="w-full border px-3 py-2 rounded"
-      />
-
-      <input
-        name="companyName"
-        type="text"
-        placeholder="Company Name"
-        value={formData.companyName}
-        onChange={handleChange}
-        className="w-full border px-3 py-2 rounded"
-      />
-
-      <input
-        name="email"
-        type="email"
-        placeholder="Email"
-        value={formData.email}
-        onChange={handleChange}
-        className="w-full border px-3 py-2 rounded"
-      />
-
-      <input
-        name="phone"
-        type="tel"
-        placeholder="Phone Number"
-        value={formData.phone}
-        onChange={handleChange}
-        className="w-full border px-3 py-2 rounded"
-      />
-
-      <input
-        name="password"
-        type="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={handleChange}
-        className="w-full border px-3 py-2 rounded"
-      />
-
-      <input
-        name="confirmPassword"
-        type="password"
-        placeholder="Confirm Password"
-        value={formData.confirmPassword}
-        onChange={handleChange}
-        className="w-full border px-3 py-2 rounded"
-      />
+      {["name", "companyName", "email", "phone", "password", "confirmPassword"].map((field) => (
+        <input
+          key={field}
+          name={field}
+          type={field.includes("password") ? "password" : field === "email" ? "email" : field === "phone" ? "tel" : "text"}
+          placeholder={field
+            .replace("confirmPassword", "Confirm Password")
+            .replace("companyName", "Company Name")
+            .replace("name", "Full Name")
+            .replace("phone", "Phone Number")
+            .replace(/^\w/, (c) => c.toUpperCase())}
+          value={(formData as any)[field]}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+        />
+      ))}
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
@@ -152,7 +108,10 @@ const RecruiterRegister = () => {
       <p onClick={navigateToLogin} className="text-blue-500 text-center cursor-pointer">
         Already registered? Go to Login
       </p>
-      <div><GoogleLoginButton /></div>
+
+      <div className="text-center pt-4 border-t">
+        <GoogleLoginButton />
+      </div>
     </div>
   );
 };
