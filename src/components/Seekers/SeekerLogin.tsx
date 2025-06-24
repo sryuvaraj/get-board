@@ -56,7 +56,7 @@ const SeekerLogin = () => {
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError("Something went wrong. Please try again.");
+      setError("Something went wrong. Try again.");
     } finally {
       setIsLoading(false);
     }
