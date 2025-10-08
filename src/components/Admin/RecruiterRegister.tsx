@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { registerRecruiter as regRecruiter } from "@/api/seekersApis/services";
+import { fetchRecruiters, registerRecruiter as regRecruiter } from "@/api/seekersApis/services";
 import GoogleLoginButton from "../General/GoogleLoginButton";
 import { RecruitersRegForm } from "@/types/formDataTypes";
 
@@ -30,30 +30,41 @@ const RecruiterRegister = () => {
   };
 
   const handleRegister = async () => {
-    const { name, companyName, email, phone, password, confirmPassword } = formData;
-
-    if (!name || !companyName || !email || !phone || !password || !confirmPassword) {
-      setError("All fields are required.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
     try {
+      const { name, companyName, email, phone, password, confirmPassword } = formData;
+
+      if (!name || !companyName || !email || !phone || !password || !confirmPassword) {
+        setError("All fields are required.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        setError("Passwords not matching.");
+        return;
+      }
+
       setIsLoading(true);
-      await regRecruiter(formData);
-      alert("Registered successfully!");
-      setFormData({
-        name: "",
-        companyName: "",
-        email: "",
-        phone: "",
-        password: "",
-        confirmPassword: "",
-      });
+      const availableRecruiters = await fetchRecruiters();
+      const recruiter = availableRecruiters.find((r: any) => r.email === email);
+      debugger
+      if (recruiter) {
+        setError("Recruiter with this email already exists.");
+        setIsLoading(false);
+        return;
+      }
+      else {
+        const res = await regRecruiter(formData);
+        alert("Registered successfully!");
+        setFormData({
+          name: "",
+          companyName: "",
+          email: "",
+          phone: "",
+          password: "",
+          confirmPassword: "",
+        });
+      }
+
     } catch (err) {
       console.error(err);
       setError("Something went wrong. Try again.");

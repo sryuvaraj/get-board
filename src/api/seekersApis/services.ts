@@ -48,8 +48,8 @@ export const registerSeeker = async (body:SeekersRegForm) => {
 
 export const registerRecruiter = async (body:RecruitersRegForm) => {
     try{
-        const resUser = await axios.post(`${baseUrl}/users`, body)
-        // const resReciteres = await axios.post(`${baseUrl}/recruiters`, body)
+        const resUser = await axios.post(`${baseUrl}/users`, {...body,role:"recruiter"})
+        const resReciteres = await axios.post(`${baseUrl}/recruiters`, body)
     
         // const resSeeker = await axios.post(`${baseUrl}/recruiters`, body)
     return resUser.data

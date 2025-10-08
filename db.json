@@ -1,20 +1,37 @@
 {
-  "users": [ ],
-  "recruiters": [ ],
-  "seekers": [ ],
-  "jobList": [
+  "users": [
     {
-      "id": "f8c5",
-      "jobTitle": "first job",
-      "description": "first job desc",
-      "location": "chennai",
-      "type": "Full-time",
-      "experience": "2",
-      "salary": "1000000",
-      "skills": [
-        "react js"
-      ],
-      "deadline": "2025-06-28"
+      "id": "7899",
+      "name": "as",
+      "companyName": "asdfads",
+      "email": "as",
+      "phone": "+918220496965",
+      "password": "as",
+      "confirmPassword": "as",
+      "role": "recruiter"
+    },
+    {
+      "id": "b249",
+      "name": "sdafd",
+      "companyName": "asdfasd",
+      "email": "as",
+      "phone": "+918220496965",
+      "password": "as",
+      "confirmPassword": "as",
+      "role": "recruiter"
     }
-  ]
+  ],
+  "recruiters": [
+    {
+      "id": "44c2",
+      "name": "sdafd",
+      "companyName": "asdfasd",
+      "email": "as",
+      "phone": "+918220496965",
+      "password": "as",
+      "confirmPassword": "as"
+    }
+  ],
+  "seekers": [],
+  "jobList": []
 }
