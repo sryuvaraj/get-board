@@ -1,21 +1,20 @@
 {
   "users": [
     {
-      "id": "7899",
+      "id": "b80a",
       "name": "as",
-      "companyName": "asdfads",
+      "userName": "as",
       "email": "as",
-      "phone": "+918220496965",
       "password": "as",
       "confirmPassword": "as",
-      "role": "recruiter"
+      "role": "seeker"
     },
     {
-      "id": "b249",
-      "name": "sdafd",
-      "companyName": "asdfasd",
+      "id": "aed1",
+      "name": "as",
+      "companyName": "as",
       "email": "as",
-      "phone": "+918220496965",
+      "phone": "as",
       "password": "as",
       "confirmPassword": "as",
       "role": "recruiter"
@@ -23,15 +22,24 @@
   ],
   "recruiters": [
     {
-      "id": "44c2",
-      "name": "sdafd",
-      "companyName": "asdfasd",
+      "id": "e4db",
+      "name": "as",
+      "companyName": "as",
       "email": "as",
-      "phone": "+918220496965",
+      "phone": "as",
       "password": "as",
       "confirmPassword": "as"
     }
   ],
-  "seekers": [],
+  "seekers": [
+    {
+      "id": "2baa",
+      "name": "as",
+      "userName": "as",
+      "email": "as",
+      "password": "as",
+      "confirmPassword": "as"
+    }
+  ],
   "jobList": []
 }

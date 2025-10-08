@@ -46,7 +46,6 @@ const RecruiterRegister = () => {
       setIsLoading(true);
       const availableRecruiters = await fetchRecruiters();
       const recruiter = availableRecruiters.find((r: any) => r.email === email);
-      debugger
       if (recruiter) {
         setError("Recruiter with this email already exists.");
         setIsLoading(false);

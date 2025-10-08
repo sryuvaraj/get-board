@@ -36,8 +36,8 @@ export const fetchRecruiters = async () => {
 
 export const registerSeeker = async (body:SeekersRegForm) => {
     try{
-        const resUser = await axios.post(`${baseUrl}/users`, body)
-        // const resSeeker = await axios.post(`${baseUrl}/seekers`, body)
+        const resUser = await axios.post(`${baseUrl}/users`, {...body,role:"seeker"})
+        const resSeeker = await axios.post(`${baseUrl}/seekers`, body)
         return resUser.data
     }
     catch(err) {

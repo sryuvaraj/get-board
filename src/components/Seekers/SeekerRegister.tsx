@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { registerSeeker as regseek } from "@/api/seekersApis/services";
+import { fetchSeekers, registerSeeker as regseek } from "@/api/seekersApis/services";
 import { SeekersRegForm } from "@/types/formDataTypes";
 
 const SeekerRegister = () => {
@@ -47,11 +47,19 @@ const SeekerRegister = () => {
     if (!validateForm()) return;
 
     try {
-      setIsLoading(true);
-      const response = await regseek(formData);
-      console.log("Registered seeker:", response);
-      // ✅ Optional redirect after success
-      // router.push("/seeker/home");
+      const availableSeeker = await fetchSeekers();
+      const seeker = availableSeeker.find((s: any) => s.email === formData.email);
+      if (seeker) {
+        setIsLoading(false);
+        return;
+      }
+      else {
+        setIsLoading(true);
+        const response = await regseek(formData);
+        console.log("Registered seeker:", response);
+        // ✅ Optional redirect after success
+        // router.push("/seeker/home");
+      }
     } catch (err) {
       console.error("Registration failed:", err);
     } finally {
@@ -73,8 +81,8 @@ const SeekerRegister = () => {
             {field === "userName"
               ? "Username"
               : field === "confirmPassword"
-              ? "Confirm Password"
-              : field.charAt(0).toUpperCase() + field.slice(1)}
+                ? "Confirm Password"
+                : field.charAt(0).toUpperCase() + field.slice(1)}
           </label>
           <input
             id={field}
